@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "salimgalib/myflaskapp"
+        IMAGE_NAME = "salemghaleb/myflaskapp"
         GIT_REPO   = "https://github.com/salemgaleb3-devops/k8smanifest-gitops.git"
         GIT_BRANCH = "main"
         GIT_CREDS  = "github-creds"
