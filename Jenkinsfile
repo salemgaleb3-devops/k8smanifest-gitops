@@ -44,7 +44,7 @@ pipeline {
 
                       git add deployment.yaml
                       git commit -m "Update image tag to ${DOCKERTAG}" || echo "No changes to commit"
-                      git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/salimgalib/kubernetesmanifest.git HEAD:${GIT_BRANCH}
+                      git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/salemgaleb3-devops/k8smanifest-gitops.git HEAD:${GIT_BRANCH}
                     """
                 }
             }
