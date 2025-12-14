@@ -26,7 +26,6 @@ kind: Service
 metadata:
   name: lb-service
 spec:
-  type: LoadBalancer
   selector:
     app: flaskdemo
   ports:
