@@ -2,7 +2,10 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'DOCKERTAG', description: 'Docker image tag (e.g. BUILD_NUMBER)')
+        string(
+            name: 'DOCKERTAG',
+            description: 'Docker image tag (e.g. BUILD_NUMBER)'
+        )
     }
 
     environment {
@@ -31,20 +34,23 @@ pipeline {
                     )
                 ]) {
                     sh """
-                      git config user.email "jenkins@local"
-                      git config user.name "jenkins"
+                        set -e
 
-                      echo "Before update:"
-                      cat deployment.yaml
+                        git config user.email "jenkins@local"
+                        git config user.name "jenkins"
 
-                      sed -i 's|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${DOCKERTAG}|' deployment.yaml
+                        echo "Before update:"
+                        cat deployment.yaml
 
-                      echo "After update:"
-                      cat deployment.yaml
+                        # Update only the image tag (safe for YAML)
+                        sed -i 's|\\(image: ${IMAGE_NAME}:\\).*|\\1${params.DOCKERTAG}|' deployment.yaml
 
-                      git add deployment.yaml
-                      git commit -m "Update image tag to ${DOCKERTAG}" || echo "No changes to commit"
-                      git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/salemgaleb3-devops/k8smanifest-gitops.git HEAD:${GIT_BRANCH}
+                        echo "After update:"
+                        cat deployment.yaml
+
+                        git add deployment.yaml
+                        git commit -m "Update image tag to ${params.DOCKERTAG}" || echo "No changes to commit"
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/salemgaleb3-devops/k8smanifest-gitops.git HEAD:${GIT_BRANCH}
                     """
                 }
             }
@@ -60,4 +66,3 @@ pipeline {
         }
     }
 }
-
