@@ -2,10 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        string(
-            name: 'DOCKERTAG',
-            description: 'Docker image tag (e.g. BUILD_NUMBER)'
-        )
+        string(name: 'DOCKERTAG', description: 'Docker image tag (e.g. BUILD_NUMBER)')
     }
 
     environment {
@@ -17,10 +14,19 @@ pipeline {
 
     stages {
 
+        stage('Validate Parameters') {
+            steps {
+                script {
+                    if (!params.DOCKERTAG?.trim()) {
+                        error "DOCKERTAG is required and cannot be empty ❌"
+                    }
+                }
+            }
+        }
+
         stage('Clone Manifest Repository') {
             steps {
-                git branch: "${GIT_BRANCH}",
-                    url: "${GIT_REPO}"
+                git branch: "${GIT_BRANCH}", url: "${GIT_REPO}"
             }
         }
 
@@ -35,34 +41,23 @@ pipeline {
                 ]) {
                     sh """
                         set -e
-
                         git config user.email "jenkins@local"
                         git config user.name "jenkins"
 
                         echo "Before update:"
-                        cat deployment.yaml
+                        grep image deployment.yaml
 
-                        # Update only the image tag (safe for YAML)
                         sed -i 's|\\(image: ${IMAGE_NAME}:\\).*|\\1${params.DOCKERTAG}|' deployment.yaml
 
                         echo "After update:"
-                        cat deployment.yaml
+                        grep image deployment.yaml
 
                         git add deployment.yaml
-                        git commit -m "Update image tag to ${params.DOCKERTAG}" || echo "No changes to commit"
+                        git commit -m "Update image tag to ${params.DOCKERTAG}"
                         git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/salemgaleb3-devops/k8smanifest-gitops.git HEAD:${GIT_BRANCH}
                     """
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo "Manifest updated successfully 🎉"
-        }
-        failure {
-            echo "Failed to update manifest ❌"
         }
     }
 }
