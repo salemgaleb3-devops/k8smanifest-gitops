@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: flaskdemo
-          image: salimgalib/myflaskapp:6
+          image: salimgalib/myflaskapp:
           ports:
             - containerPort: 5000
 
