@@ -7,9 +7,9 @@ pipeline {
 
     environment {
         IMAGE_NAME = "salimgalib/myflaskapp"
-        GIT_REPO   = "https://github.com/salimgalib/kubernetesmanifest.git"
+        GIT_REPO   = "https://github.com/salemgaleb3-devops/k8smanifest-gitops.git"
         GIT_BRANCH = "main"
-        GIT_CREDS  = "github"
+        GIT_CREDS  = "dockerhub-creds"
     }
 
     stages {
