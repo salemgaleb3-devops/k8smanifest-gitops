@@ -37,7 +37,7 @@ pipeline {
                       echo "Before update:"
                       cat deployment.yaml
 
-                      sed -i 's|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${DOCKERTAG}|' deployment.yaml
+                      sed -i 's|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:latest|' deployment.yaml
 
                       echo "After update:"
                       cat deployment.yaml
